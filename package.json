@@ -1,0 +1,32 @@
+{
+  "name": "character.ai",
+  "version": "1.0.0",
+  "description": "An unofficial API wrapper for Character.AI",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RichardDorian/node-character.ai.git"
+  },
+  "keywords": [
+    "character.ai",
+    "ai"
+  ],
+  "author": "RichardDorian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RichardDorian/node-character.ai/issues"
+  },
+  "homepage": "https://github.com/RichardDorian/node-character.ai#readme",
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "typescript": "^4.8.4"
+  },
+  "files": [
+    "dist"
+  ]
+}
