@@ -10,7 +10,7 @@ export default class Chat {
   public constructor(
     client: CharacterAI,
     characterId: string,
-    continueBody: any
+    continueBody: any,
   ) {
     this.characterId = characterId;
     this.externalId = continueBody.external_id;
@@ -18,7 +18,7 @@ export default class Chat {
     this.client = client;
 
     const ai = continueBody.participants.find(
-      (participant) => participant.is_human === false
+      (participant) => participant.is_human === false,
     );
     this.aiId = ai.user.username;
   }
@@ -27,13 +27,16 @@ export default class Chat {
     const { body } = await this.client.request(
       `https://beta.character.ai/chat/history/msgs/user/?history_external_id=${this.externalId}`,
       undefined,
-      { method: 'GET', headers: this.client.getHeaders() }
+      { method: 'GET', headers: this.client.getHeaders() },
     );
 
     return JSON.parse(body.toString());
   }
 
-  public async sendAndAwaitResponse(message: string): Promise<ChatReply[]> {
+  public async sendAndAwaitResponse({
+    message,
+    singleReply,
+  }: SendAndAwaitResponseProps): Promise<ChatReply[] | string> {
     const payload = {
       history_external_id: this.externalId,
       character_external_id: this.characterId,
@@ -63,7 +66,7 @@ export default class Chat {
     const { body } = await this.client.request(
       `https://beta.character.ai/chat/streaming/`,
       JSON.stringify(payload),
-      { method: 'POST', headers: this.client.getHeaders() }
+      { method: 'POST', headers: this.client.getHeaders() },
     );
 
     const replies: ChatReply[] = [];
@@ -79,7 +82,9 @@ export default class Chat {
       replies.push(JSON.parse(line.slice(start - 1)));
     }
 
-    return replies;
+    if (!singleReply) return replies;
+    // Returns what's seen in the chat window of the CharacterAI website
+    else return replies.pop().replies.shift().text;
   }
 }
 
@@ -116,4 +121,8 @@ interface ChatReply {
     };
   };
   is_final_chunk: boolean;
+}
+interface SendAndAwaitResponseProps {
+  message: string;
+  singleReply?: boolean;
 }
